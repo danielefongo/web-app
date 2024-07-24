@@ -1,10 +1,17 @@
-const { app, session, BrowserWindow, WebContentsView } = require("electron");
+const {
+  app,
+  globalShortcut,
+  session,
+  BrowserWindow,
+  WebContentsView,
+} = require("electron");
 
 const path = require("path");
 const fs = require("fs");
 
 const quit = (code) => {
   app.quit();
+  globalShortcut.unregisterAll();
   if (code) process.exit(code);
 };
 
@@ -37,6 +44,16 @@ const setUserAgent = () => {
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
     details.requestHeaders["User-Agent"] = userAgent;
     callback({ cancel: false, requestHeaders: details.requestHeaders });
+  });
+};
+
+const registerShortcuts = () => {
+  globalShortcut.register("CommandOrControl+Shift+I", () => {
+    const focusedWindow = BrowserWindow.getFocusedWindow();
+    if (focusedWindow) {
+      let currentView = focusedWindow.contentView.children[0];
+      currentView.webContents.toggleDevTools();
+    }
   });
 };
 
@@ -110,6 +127,7 @@ const createWindow = () => {
 };
 
 const runApp = () => {
+  registerShortcuts();
   setUserAgent();
   createWindow();
 };
