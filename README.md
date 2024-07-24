@@ -5,7 +5,7 @@ Just a wrapper for sites.
 ## Usage
 
 ```bash
-electron . \
+./WebApp-<VERSION>.AppImage \
     --title <title> \
     --site <site> \
     --css <css-location> \
