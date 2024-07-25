@@ -14,6 +14,8 @@ Just a wrapper for sites.
 
 ### Configuration file
 
+Example:
+
 ```js
 module.exports = {
   title: "Title", // Required
@@ -21,5 +23,11 @@ module.exports = {
   css: "style.css", // Optional, hot reloaded if changed
   icon: "icon.png", // Optional
   userAgent: "My User Agent", // Optional
+  bindings: [ // Optional
+    {
+      key: "CommandOrControl+Shift+I",
+      action: (view) => view.webContents.toggleDevTools(),
+    },
+  ]
 };
 ```

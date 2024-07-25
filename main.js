@@ -39,13 +39,15 @@ const setUserAgent = () => {
 };
 
 const registerShortcuts = () => {
-  globalShortcut.register("CommandOrControl+Shift+I", () => {
-    const focusedWindow = BrowserWindow.getFocusedWindow();
-    if (focusedWindow) {
-      let currentView = focusedWindow.contentView.children[0];
-      currentView.webContents.toggleDevTools();
-    }
-  });
+  for (const binding of config.bindings || []) {
+    globalShortcut.register(binding.key, () => {
+      const focusedWindow = BrowserWindow.getFocusedWindow();
+      if (focusedWindow) {
+        let currentView = focusedWindow.contentView.children[0];
+        binding.action(currentView);
+      }
+    });
+  }
 };
 
 const createWindow = () => {
