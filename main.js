@@ -28,7 +28,6 @@ const site = getArgument("--site");
 const icon = getArgument("--icon");
 const css = getArgument("--css");
 const userAgent = getArgument("--user-agent");
-const load = getArgument("--load");
 
 if (!title) {
   console.error("Error: The '--title' parameter is required.");
@@ -70,17 +69,10 @@ const createWindow = () => {
     mainWindow.focus();
   });
 
-  const loading = new WebContentsView();
-  loading.webContents.loadFile(
-    load ? path.resolve(load) : path.join(__dirname, "load.html"),
-  );
-
-  loading.setBounds({ x: 0, y: 0, width: 0, height: 0 });
-
   const view = new WebContentsView({
     webPreferences: {
       contextIsolation: false,
-      preload: path.join(__dirname, "preload.js"),
+      preload: __dirname + "/preload.js",
     },
   });
   view.webContents.loadURL(site);
@@ -93,20 +85,12 @@ const createWindow = () => {
     let width = winBounds.width;
     let height = winBounds.height;
     view.setBounds({ x: 0, y: 0, width, height });
-    loading.setBounds({ x: 0, y: 0, width, height });
   });
 
   let cssKey;
   let watcher;
 
-  view.webContents.on("will-navigate", () => {
-    mainWindow.contentView.removeChildView(view);
-    mainWindow.contentView.addChildView(loading);
-  });
-  view.webContents.on("did-finish-load", async () => {
-    mainWindow.contentView.removeChildView(loading);
-    mainWindow.contentView.addChildView(view);
-
+  view.webContents.on("did-navigate", async () => {
     if (css) {
       let filename = path.resolve(css);
       if (fs.existsSync(filename)) {
