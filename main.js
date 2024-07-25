@@ -23,26 +23,17 @@ const getArgument = (argName) => {
     : null;
 };
 
-const title = getArgument("--title");
-const site = getArgument("--site");
-const icon = getArgument("--icon");
-const css = getArgument("--css");
-const userAgent = getArgument("--user-agent");
-
-if (!title) {
-  console.error("Error: The '--title' parameter is required.");
+const configFile = getArgument("--config");
+if (!configFile || !fs.existsSync(path.resolve(configFile))) {
+  console.error("Config file not found");
   quit(1);
 }
-
-if (!site) {
-  console.error("Error: The '--site' parameter is required.");
-  quit(1);
-}
+const config = require(path.resolve(configFile));
 
 const setUserAgent = () => {
-  if (!userAgent) return;
+  if (!config.userAgent) return;
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders["User-Agent"] = userAgent;
+    details.requestHeaders["User-Agent"] = config.userAgent;
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
 };
@@ -75,7 +66,7 @@ const createWindow = () => {
       preload: __dirname + "/preload.js",
     },
   });
-  view.webContents.loadURL(site);
+  view.webContents.loadURL(config.site);
   view.setBounds({ x: 0, y: 0, width: 800, height: 400 });
 
   mainWindow.contentView.addChildView(view);
@@ -91,8 +82,8 @@ const createWindow = () => {
   let watcher;
 
   view.webContents.on("did-navigate", async () => {
-    if (css) {
-      let filename = path.resolve(css);
+    if (config.css) {
+      let filename = path.resolve(config.css);
       if (fs.existsSync(filename)) {
         const css = fs.readFileSync(filename, "utf8");
         cssKey = await view.webContents.insertCSS(css);
@@ -110,8 +101,8 @@ const createWindow = () => {
         }
       }
     }
-    mainWindow.setTitle(title);
-    if (icon) mainWindow.setIcon(path.resolve(icon));
+    mainWindow.setTitle(config.title);
+    if (config.icon) mainWindow.setIcon(path.resolve(config.icon));
   });
 
   mainWindow.on("closed", quit);

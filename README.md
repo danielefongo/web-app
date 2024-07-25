@@ -6,13 +6,20 @@ Just a wrapper for sites.
 
 ```bash
 ./WebApp-<VERSION>.AppImage \
-    --title <title> \
+    --config <config-file> \
     --site <site> \
     --css <css-location> \
     --icon <icon-location> \
-    --load <loading-location>
 ```
 
-Only title and site are required.
+### Configuration file
 
-Css is hot-reloaded.
+```js
+module.exports = {
+  title: "Title", // Required
+  site: "https://site.com", // Required
+  css: "style.css", // Optional, hot reloaded if changed
+  icon: "icon.png", // Optional
+  userAgent: "My User Agent", // Optional
+};
+```
