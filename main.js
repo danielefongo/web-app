@@ -63,9 +63,6 @@ const createWindow = () => {
     height: 600,
     frame: false,
     fullscreen: false,
-    webPreferences: {
-      nodeIntegration: true,
-    },
   });
 
   const loading = new WebContentsView();
