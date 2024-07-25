@@ -1,6 +1,7 @@
 const {
   app,
   globalShortcut,
+  ipcMain,
   session,
   BrowserWindow,
   WebContentsView,
@@ -65,6 +66,10 @@ const createWindow = () => {
     fullscreen: false,
   });
 
+  ipcMain.on("notification-clicked", () => {
+    mainWindow.focus();
+  });
+
   const loading = new WebContentsView();
   loading.webContents.loadFile(
     load ? path.resolve(load) : path.join(__dirname, "load.html"),
@@ -72,7 +77,12 @@ const createWindow = () => {
 
   loading.setBounds({ x: 0, y: 0, width: 0, height: 0 });
 
-  const view = new WebContentsView();
+  const view = new WebContentsView({
+    webPreferences: {
+      contextIsolation: false,
+      preload: path.join(__dirname, "preload.js"),
+    },
+  });
   view.webContents.loadURL(site);
   view.setBounds({ x: 0, y: 0, width: 800, height: 400 });
 
