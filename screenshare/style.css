@@ -1,0 +1,97 @@
+:root {
+  --web-app-source-picker-background: #0a0a0a;
+  --web-app-source-picker-item-bg: #1d1d1d;
+  --web-app-source-picker-item-fg: #bbbbbb;
+  --web-app-source-picker-item-border: #1d1d1d;
+  --web-app-source-picker-highlight-bg: #72cef3;
+  --web-app-source-picker-highlight-fg: #1d1d1d;
+  --web-app-source-picker-highlight-border: #72cef3;
+  --web-app-source-picker-cancel-fg: #ffffff;
+  --web-app-source-picker-cancel-bg: #c6152f;
+  --web-app-source-picker-cancel-hover-fg: #0a0a0a;
+  --web-app-source-picker-cancel-hover-bg: #f53853;
+}
+* {
+  font-family: "Whitney", sans-serif;
+  box-sizing: border-box;
+}
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+.source-picker {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--web-app-source-picker-background);
+}
+.source-grid-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+.source-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+.source-item {
+  display: flex;
+  flex-direction: column;
+}
+.source-button {
+  background: var(--web-app-source-picker-item-bg);
+  border: 1px solid var(--web-app-source-picker-item-border);
+  color: var(--web-app-source-picker-item-fg);
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    background 0.3s,
+    border-color 0.3s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.source-button:hover,
+.source-button:focus {
+  color: var(--web-app-source-picker-highlight-fg);
+  background: var(--web-app-source-picker-highlight-bg);
+  border-color: var(--web-app-source-picker-highlight-border);
+}
+.source-thumbnail {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 5px 5px 0 0;
+}
+.source-name {
+  margin-top: 8px;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cancel-container {
+  padding: 10px;
+  background: var(--web-app-source-picker-background);
+  text-align: center;
+}
+.cancel-button {
+  background: var(--web-app-source-picker-cancel-bg);
+  color: var(--web-app-source-picker-cancel-fg);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+}
+.cancel-button:hover {
+  background: var(--web-app-source-picker-cancel-hover-bg);
+  color: var(--web-app-source-picker-cancel-hover-fg);
+}

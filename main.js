@@ -7,6 +7,7 @@ const {
   WebContentsView,
 } = require("electron");
 
+const prepareScreenshare = require("./screenshare/main");
 const path = require("path");
 const fs = require("fs");
 
@@ -117,6 +118,7 @@ const runApp = () => {
     "userData",
     path.join(app.getPath("userData"), config.dataFolder || config.title),
   );
+  prepareScreenshare(config.title);
   registerShortcuts();
   setUserAgent();
   createWindow();
