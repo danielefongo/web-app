@@ -27,6 +27,11 @@
     },
     "linux": {
       "target": "AppImage"
+    },
+    "electronVersion": "31.0.0",
+    "electronDownload": {
+      "version": "31.0.0+wvcus",
+      "mirror": "https://github.com/castlabs/electron-releases/releases/download/v"
     }
   }
 }
