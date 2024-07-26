@@ -19,6 +19,7 @@ module.exports = {
   css: "style.css", // Optional, hot reloaded if changed
   icon: "icon.png", // Optional
   userAgent: "My User Agent", // Optional
+  dataFolder: "MyApp", // Optional, fallbacks to title. Used for storing settings
   bindings: [ // Optional
     {
       key: "CommandOrControl+Shift+I",

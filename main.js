@@ -110,6 +110,10 @@ const createWindow = () => {
   mainWindow.on("closed", quit);
 };
 
+app.setPath(
+  "userData",
+  path.join(app.getPath("userData"), config.dataFolder || config.title),
+);
 const runApp = () => {
   registerShortcuts();
   setUserAgent();
