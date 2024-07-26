@@ -7,8 +7,9 @@ const {
 
 const path = require("path");
 const fs = require("fs");
+const Watcher = require("../cssWatcher");
 
-module.exports = (appTitle) => {
+module.exports = (config) => {
   session.defaultSession.setDisplayMediaRequestHandler((_, callback) => {
     desktopCapturer
       .getSources({ types: ["screen", "window"] })
@@ -21,17 +22,23 @@ module.exports = (appTitle) => {
           height: 600,
           frame: false,
           fullscreen: false,
-          title: `${appTitle} - Screenshare`,
+          title: `${config.title} - Screenshare`,
           webPreferences: {
             preload: path.join(__dirname, "preload.js"),
           },
         });
+        sourcePicker.webContents.toggleDevTools();
+
+        let watcher = new Watcher(sourcePicker, config.css);
+
         sourcePicker.webContents.on("did-finish-load", async () => {
           await sourcePicker.webContents.insertCSS(
             fs.readFileSync(path.resolve(__dirname, "style.css"), "utf8"),
           );
+          watcher.watch();
         });
         sourcePicker.on("closed", () => {
+          watcher.unwatch();
           if (!completed) callback();
         });
         sourcePicker.loadFile(path.join(__dirname, "picker.html"));

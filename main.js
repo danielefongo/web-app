@@ -7,6 +7,7 @@ const {
   WebContentsView,
 } = require("electron");
 
+const Watcher = require("./cssWatcher");
 const prepareScreenshare = require("./screenshare/main");
 const path = require("path");
 const fs = require("fs");
@@ -82,29 +83,10 @@ const createWindow = () => {
     view.setBounds({ x: 0, y: 0, width, height });
   });
 
-  let cssKey;
-  let watcher;
+  let watcher = new Watcher(view, config.css);
 
   view.webContents.on("did-navigate", async () => {
-    if (config.css) {
-      let filename = path.resolve(config.css);
-      if (fs.existsSync(filename)) {
-        const css = fs.readFileSync(filename, "utf8");
-        cssKey = await view.webContents.insertCSS(css);
-
-        if (!watcher) {
-          watcher = fs.watch(filename, async (eventType) => {
-            if (eventType === "change") {
-              const updatedCss = fs.readFileSync(filename, "utf8");
-              if (cssKey) {
-                await view.webContents.removeInsertedCSS(cssKey);
-              }
-              cssKey = await view.webContents.insertCSS(updatedCss);
-            }
-          });
-        }
-      }
-    }
+    watcher.watch();
     mainWindow.setTitle("");
     if (config.icon) mainWindow.setIcon(path.resolve(config.icon));
   });
@@ -118,7 +100,7 @@ const runApp = () => {
     "userData",
     path.join(app.getPath("userData"), config.dataFolder || config.title),
   );
-  prepareScreenshare(config.title);
+  prepareScreenshare(config);
   registerShortcuts();
   setUserAgent();
   createWindow();
