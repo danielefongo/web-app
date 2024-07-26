@@ -27,7 +27,6 @@ module.exports = (config) => {
             preload: path.join(__dirname, "preload.js"),
           },
         });
-        sourcePicker.webContents.toggleDevTools();
 
         let watcher = new Watcher(sourcePicker, config.css);
 
