@@ -103,18 +103,19 @@ const createWindow = () => {
         }
       }
     }
-    mainWindow.setTitle(config.title);
+    mainWindow.setTitle("");
     if (config.icon) mainWindow.setIcon(path.resolve(config.icon));
   });
 
   mainWindow.on("closed", quit);
 };
 
-app.setPath(
-  "userData",
-  path.join(app.getPath("userData"), config.dataFolder || config.title),
-);
 const runApp = () => {
+  app.setName(config.title);
+  app.setPath(
+    "userData",
+    path.join(app.getPath("userData"), config.dataFolder || config.title),
+  );
   registerShortcuts();
   setUserAgent();
   createWindow();
