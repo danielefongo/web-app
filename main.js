@@ -68,6 +68,7 @@ const createWindow = () => {
       preload: __dirname + "/preload.js",
     },
   });
+  if (config.userAgent) view.webContents.setUserAgent(config.userAgent);
   view.webContents.loadURL(config.site);
   view.setBounds({ x: 0, y: 0, width: 800, height: 400 });
 
