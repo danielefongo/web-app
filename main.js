@@ -4,7 +4,6 @@ const {
   ipcMain,
   session,
   BrowserWindow,
-  WebContentsView,
 } = require("electron");
 
 const Watcher = require("./cssWatcher");
@@ -45,8 +44,7 @@ const registerShortcuts = () => {
     globalShortcut.register(binding.key, () => {
       const focusedWindow = BrowserWindow.getFocusedWindow();
       if (focusedWindow) {
-        let currentView = focusedWindow.contentView.children[0];
-        binding.action(currentView);
+        binding.action(focusedWindow);
       }
     });
   }
@@ -58,34 +56,22 @@ const createWindow = () => {
     height: 600,
     frame: false,
     fullscreen: false,
+    webPreferences: {
+      contextIsolation: false,
+      preload: __dirname + "/preload.js",
+    },
   });
 
   ipcMain.on("notification-clicked", () => {
     mainWindow.focus();
   });
 
-  const view = new WebContentsView({
-    webPreferences: {
-      contextIsolation: false,
-      preload: __dirname + "/preload.js",
-    },
-  });
-  if (config.userAgent) view.webContents.setUserAgent(config.userAgent);
-  view.webContents.loadURL(config.site);
-  view.setBounds({ x: 0, y: 0, width: 800, height: 400 });
+  if (config.userAgent) mainWindow.webContents.setUserAgent(config.userAgent);
+  mainWindow.webContents.loadURL(config.site);
 
-  mainWindow.contentView.addChildView(view);
+  let watcher = new Watcher(mainWindow, config.css);
 
-  mainWindow.on("resize", () => {
-    let winBounds = mainWindow.getBounds();
-    let width = winBounds.width;
-    let height = winBounds.height;
-    view.setBounds({ x: 0, y: 0, width, height });
-  });
-
-  let watcher = new Watcher(view, config.css);
-
-  view.webContents.on("did-navigate", async () => {
+  mainWindow.webContents.on("did-navigate", async () => {
     watcher.watch();
     mainWindow.setTitle("");
     if (config.icon) mainWindow.setIcon(path.resolve(config.icon));
