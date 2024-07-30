@@ -13,7 +13,7 @@ const fs = require("fs");
 
 const quit = (code) => {
   app.quit();
-  globalShortcut.unregisterAll();
+  unregisterShortcuts();
   if (code) process.exit(code);
 };
 
@@ -37,6 +37,10 @@ const setUserAgent = () => {
     details.requestHeaders["User-Agent"] = config.userAgent;
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
+};
+
+const unregisterShortcuts = () => {
+  globalShortcut.unregisterAll();
 };
 
 const registerShortcuts = () => {
@@ -93,6 +97,8 @@ const runApp = () => {
 };
 
 app.whenReady().then(runApp);
+app.on("browser-window-focus", registerShortcuts);
+app.on("browser-window-blur", unregisterShortcuts);
 app.on("window-all-closed", quit);
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
