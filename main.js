@@ -75,11 +75,6 @@ const createWindow = () => {
 
   let watcher = new Watcher(mainWindow, config.css);
 
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
-    return { action: "deny" };
-  });
-
   mainWindow.webContents.on("did-navigate", async () => {
     watcher.watch();
     mainWindow.setTitle("");
