@@ -61,7 +61,7 @@ const createWindow = () => {
     frame: false,
     fullscreen: false,
     webPreferences: {
-      contextIsolation: false,
+      contextIsolation: true,
       preload: __dirname + "/preload.js",
     },
   });
@@ -75,6 +75,21 @@ const createWindow = () => {
 
   let watcher = new Watcher(mainWindow, config.css);
 
+  mainWindow.webContents.on("did-finish-load", () => {
+    mainWindow.webContents.executeJavaScript(`
+      const oldNotification = window.Notification;
+      const newNotification = function (title, options) {
+        const notification = new oldNotification(title, options);
+        notification.addEventListener("click", function () {
+          window.webapp.sendMessage("notification-clicked");
+        });
+        return notification;
+      };
+
+      Object.assign(newNotification, oldNotification);
+
+      window.Notification = newNotification;`);
+  });
   mainWindow.webContents.on("did-navigate", async () => {
     watcher.watch();
     mainWindow.setTitle("");
