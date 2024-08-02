@@ -7,7 +7,8 @@ const {
 
 const path = require("path");
 const fs = require("fs");
-const Watcher = require("../cssWatcher");
+
+const Css = require("../plugins/css");
 
 module.exports = (config) => {
   session.defaultSession.setDisplayMediaRequestHandler((_, callback) => {
@@ -28,16 +29,18 @@ module.exports = (config) => {
           },
         });
 
-        let watcher = new Watcher(sourcePicker, config.css);
+        let css = new Css(config.css);
 
         sourcePicker.webContents.on("did-finish-load", async () => {
           await sourcePicker.webContents.insertCSS(
             fs.readFileSync(path.resolve(__dirname, "style.css"), "utf8"),
           );
-          watcher.watch();
         });
+
+        css.setup(sourcePicker);
+
         sourcePicker.on("closed", () => {
-          watcher.unwatch();
+          css.unload();
           if (!completed) callback();
         });
         sourcePicker.loadFile(path.join(__dirname, "picker.html"));

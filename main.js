@@ -1,12 +1,8 @@
-const {
-  app,
-  globalShortcut,
-  ipcMain,
-  session,
-  BrowserWindow,
-} = require("electron");
+const { app, globalShortcut, session, BrowserWindow } = require("electron");
 
-const Watcher = require("./cssWatcher");
+const Notification = require("./plugins/notification");
+const Css = require("./plugins/css");
+
 const prepareScreenshare = require("./screenshare/main");
 const path = require("path");
 const fs = require("fs");
@@ -66,32 +62,14 @@ const createWindow = () => {
     },
   });
 
-  ipcMain.on("notification-clicked", () => {
-    mainWindow.focus();
-  });
+  let plugins = [new Notification(), new Css(config.css)];
+
+  plugins.forEach((plugin) => plugin.setup(mainWindow));
 
   if (config.userAgent) mainWindow.webContents.setUserAgent(config.userAgent);
   mainWindow.webContents.loadURL(config.site);
 
-  let watcher = new Watcher(mainWindow, config.css);
-
-  mainWindow.webContents.on("did-finish-load", () => {
-    mainWindow.webContents.executeJavaScript(`
-      const oldNotification = window.Notification;
-      const newNotification = function (title, options) {
-        const notification = new oldNotification(title, options);
-        notification.addEventListener("click", function () {
-          window.webapp.sendMessage("notification-clicked");
-        });
-        return notification;
-      };
-
-      Object.assign(newNotification, oldNotification);
-
-      window.Notification = newNotification;`);
-  });
   mainWindow.webContents.on("did-navigate", async () => {
-    watcher.watch();
     mainWindow.setTitle("");
     if (config.icon) mainWindow.setIcon(path.resolve(config.icon));
   });
