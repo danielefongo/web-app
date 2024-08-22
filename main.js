@@ -3,8 +3,8 @@ const { app, globalShortcut, session, BrowserWindow } = require("electron");
 const Notification = require("./plugins/notification");
 const Css = require("./plugins/css");
 const Music = require("./plugins/music");
+const Screenshare = require("./plugins/screenshare");
 
-const prepareScreenshare = require("./screenshare/main");
 const path = require("path");
 const fs = require("fs");
 
@@ -67,6 +67,7 @@ const createWindow = () => {
     new Notification(config.notifications),
     new Css(config.css),
     new Music(config.title, config.music),
+    new Screenshare(config.screenshare, config.title, config.css),
   ];
 
   if (config.userAgent) mainWindow.webContents.setUserAgent(config.userAgent);
@@ -88,7 +89,6 @@ const runApp = () => {
     "userData",
     path.join(app.getPath("userData"), config.dataFolder || config.title),
   );
-  prepareScreenshare(config);
   registerShortcuts();
   setUserAgent();
   createWindow();

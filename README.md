@@ -22,6 +22,7 @@ module.exports = {
   dataFolder: "MyApp", // Optional, fallbacks to title. Used for storing settings
   music: class MusicPlayer { ... } // Optional
   notifications: true, // Optional, default false
+  screenshare: true, // Optional, default false
   bindings: [ // Optional
     {
       key: "CommandOrControl+Shift+I",
