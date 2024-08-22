@@ -24,6 +24,4 @@ module.exports = class Notification extends Plugin {
       window.focus();
     });
   }
-
-  unload() {}
 };

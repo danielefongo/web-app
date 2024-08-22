@@ -2,6 +2,7 @@ const { app, globalShortcut, session, BrowserWindow } = require("electron");
 
 const Notification = require("./plugins/notification");
 const Css = require("./plugins/css");
+const Music = require("./plugins/music");
 
 const prepareScreenshare = require("./screenshare/main");
 const path = require("path");
@@ -62,12 +63,16 @@ const createWindow = () => {
     },
   });
 
-  let plugins = [new Notification(), new Css(config.css)];
-
-  plugins.forEach((plugin) => plugin.setup(mainWindow));
+  let plugins = [
+    new Notification(),
+    new Css(config.css),
+    new Music(config.title, config.music),
+  ];
 
   if (config.userAgent) mainWindow.webContents.setUserAgent(config.userAgent);
   mainWindow.webContents.loadURL(config.site);
+
+  plugins.forEach((plugin) => plugin.setup(mainWindow));
 
   mainWindow.webContents.on("did-navigate", async () => {
     mainWindow.setTitle("");
@@ -87,6 +92,7 @@ const runApp = () => {
   registerShortcuts();
   setUserAgent();
   createWindow();
+  app.commandLine.appendSwitch("disable-features", "MediaSessionService");
 };
 
 app.whenReady().then(runApp);
