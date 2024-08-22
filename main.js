@@ -64,7 +64,7 @@ const createWindow = () => {
   });
 
   let plugins = [
-    new Notification(),
+    new Notification(config.notifications),
     new Css(config.css),
     new Music(config.title, config.music),
   ];

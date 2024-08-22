@@ -21,6 +21,7 @@ module.exports = {
   userAgent: "My User Agent", // Optional
   dataFolder: "MyApp", // Optional, fallbacks to title. Used for storing settings
   music: class MusicPlayer { ... } // Optional
+  notifications: true, // Optional, default false
   bindings: [ // Optional
     {
       key: "CommandOrControl+Shift+I",
