@@ -8,6 +8,10 @@ const Screenshare = require("./plugins/screenshare");
 const path = require("path");
 const fs = require("fs");
 
+const uriString = process.argv[process.argv.length - 1].startsWith("--")
+  ? null
+  : process.argv[process.argv.length - 1];
+
 const quit = (code) => {
   app.quit();
   unregisterShortcuts();
@@ -75,7 +79,14 @@ const createWindow = () => {
 
   plugins.forEach((plugin) => plugin.setup(mainWindow));
 
+  let navigated = false;
   mainWindow.webContents.on("did-navigate", async () => {
+    if (!navigated && uriString) {
+      navigated = true;
+      mainWindow.webContents.loadURL(
+        (config.urlParser || ((it) => it))(uriString),
+      );
+    }
     mainWindow.setTitle("");
     if (config.icon) mainWindow.setIcon(path.resolve(config.icon));
   });

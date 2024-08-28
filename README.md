@@ -5,7 +5,7 @@ Just a wrapper for sites.
 ## Usage
 
 ```bash
-./WebApp-<VERSION>.AppImage --config <config-file>
+./WebApp-<VERSION>.AppImage --config <config-file> [<url>]
 ```
 
 ### Configuration file
@@ -20,6 +20,7 @@ module.exports = {
   icon: "icon.png", // Optional
   userAgent: "My User Agent", // Optional
   dataFolder: "MyApp", // Optional, fallbacks to title. Used for storing settings
+  urlParser: (url) => { ... }, // Optional, used to parse the url
   music: class MusicPlayer { ... } // Optional
   notifications: true, // Optional, default false
   screenshare: true, // Optional, default false
