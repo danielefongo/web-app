@@ -4,7 +4,7 @@ Just a wrapper for sites.
 
 ## Usage
 
-```bash
+```
 ./WebApp-<VERSION>.AppImage --config <config-file> [<url>]
 ```
 
@@ -19,7 +19,7 @@ module.exports = {
   css: "style.css", // Optional, hot reloaded if changed
   icon: "icon.png", // Optional
   userAgent: "My User Agent", // Optional
-  dataFolder: "MyApp", // Optional, fallbacks to title. Used for storing settings
+  configFolder: "MyApp", // Optional, fallbacks to title. Used for storing settings (e.g. ~/.config/MyApp)
   urlParser: (url) => { ... }, // Optional, used to parse the url
   music: class MusicPlayer { ... } // Optional
   notifications: true, // Optional, default false

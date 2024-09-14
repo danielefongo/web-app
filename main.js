@@ -94,8 +94,8 @@ const createWindow = () => {
   mainWindow.on("closed", quit);
 };
 
+app.setName(config.configFolder || config.title);
 const runApp = () => {
-  app.setName(config.title);
   app.setPath(
     "userData",
     path.join(app.getPath("userData"), config.dataFolder || config.title),
