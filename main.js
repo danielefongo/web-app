@@ -96,10 +96,6 @@ const createWindow = () => {
 
 app.setName(config.configFolder || config.title);
 const runApp = () => {
-  app.setPath(
-    "userData",
-    path.join(app.getPath("userData"), config.dataFolder || config.title),
-  );
   registerShortcuts();
   setUserAgent();
   createWindow();
