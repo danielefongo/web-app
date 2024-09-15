@@ -8,9 +8,31 @@ const Screenshare = require("./plugins/screenshare");
 const path = require("path");
 const fs = require("fs");
 
-const uriString = process.argv[process.argv.length - 1].startsWith("--")
-  ? null
-  : process.argv[process.argv.length - 1];
+let mainWindow;
+
+const getURI = (argv) => {
+  const uriRegex = /^[a-z]+:\/\//i;
+
+  return (
+    argv.slice(1).findLast((arg) => {
+      if (arg.startsWith("--") || !uriRegex.test(arg)) return false;
+
+      try {
+        const url = new URL(arg);
+        return url.protocol !== "file:" && url.protocol !== ":";
+      } catch {
+        return false;
+      }
+    }) ?? null
+  );
+};
+
+const loadURI = (uri) => {
+  if (mainWindow && uri !== null) {
+    let url = (config.uriParser || ((it) => it))(uri);
+    if (url) mainWindow.loadURL(url);
+  }
+};
 
 const quit = (code) => {
   app.quit();
@@ -56,7 +78,7 @@ const registerShortcuts = () => {
 };
 
 const createWindow = () => {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     frame: false,
@@ -81,11 +103,9 @@ const createWindow = () => {
 
   let navigated = false;
   mainWindow.webContents.on("did-navigate", async () => {
-    if (!navigated && uriString) {
+    if (!navigated) {
       navigated = true;
-      mainWindow.webContents.loadURL(
-        (config.urlParser || ((it) => it))(uriString),
-      );
+      loadURI(getURI(process.argv));
     }
     mainWindow.setTitle("");
     if (config.icon) mainWindow.setIcon(path.resolve(config.icon));
@@ -102,12 +122,31 @@ const runApp = () => {
   app.commandLine.appendSwitch("disable-features", "MediaSessionService");
 };
 
-app.whenReady().then(runApp);
-app.on("browser-window-focus", registerShortcuts);
-app.on("browser-window-blur", unregisterShortcuts);
-app.on("window-all-closed", quit);
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    runApp();
-  }
-});
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.on("second-instance", () => {
+    app.quit();
+  });
+  app.whenReady().then(() => {
+    app.focus({ steal: true });
+    app.quit();
+  });
+} else {
+  app.on("second-instance", (_, commandLine) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+    loadURI(getURI(commandLine));
+  });
+  app.whenReady().then(runApp);
+  app.on("browser-window-focus", registerShortcuts);
+  app.on("browser-window-blur", unregisterShortcuts);
+  app.on("window-all-closed", quit);
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      runApp();
+    }
+  });
+}

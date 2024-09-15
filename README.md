@@ -5,7 +5,7 @@ Just a wrapper for sites.
 ## Usage
 
 ```
-./WebApp-<VERSION>.AppImage --config <config-file> [<url>]
+./WebApp-<VERSION>.AppImage --config <config-file> [<uri>]
 ```
 
 ### Configuration file
@@ -20,7 +20,7 @@ module.exports = {
   icon: "icon.png", // Optional
   userAgent: "My User Agent", // Optional
   configFolder: "MyApp", // Optional, fallbacks to title. Used for storing settings (e.g. ~/.config/MyApp)
-  urlParser: (url) => { ... }, // Optional, used to parse the url
+  uriParser: (uri) => { ... }, // Optional, used to parse the uri
   music: class MusicPlayer { ... } // Optional
   notifications: true, // Optional, default false
   screenshare: true, // Optional, default false
@@ -53,6 +53,10 @@ With the css file defined in the configuration, you can use the following css to
 }
 /* These are the default values */
 ```
+
+#### URI parser
+
+With the URI parser, you can define how your app opens the link (provided as the last parameter). If the parser returns null or undefined, the URL won't be loaded. This prevents the app from opening URLs outside its scope, for example.
 
 #### Music player
 
