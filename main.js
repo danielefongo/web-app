@@ -7,6 +7,7 @@ const Screenshare = require("./plugins/screenshare");
 
 const path = require("path");
 const fs = require("fs");
+const OpenExternally = require("./plugins/openExternally");
 
 let mainWindow;
 
@@ -94,6 +95,7 @@ const createWindow = () => {
     new Css(config.css),
     new Music(config.title, config.music),
     new Screenshare(config.screenshare, config.title, config.css),
+    new OpenExternally(),
   ];
 
   if (config.userAgent) mainWindow.webContents.setUserAgent(config.userAgent);
