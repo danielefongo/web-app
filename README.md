@@ -29,6 +29,12 @@ module.exports = {
       key: "CommandOrControl+Shift+I",
       action: (view) => view.webContents.toggleDevTools(),
     },
+  ],
+  globalBindings: [ // Optional
+    {
+      key: "CommandOrControl+Shift+F",
+      action: (view) => {},
+    },
   ]
 };
 ```
@@ -100,3 +106,7 @@ window.webapp.sendMessage("music", payload)
   }
 }
 ```
+
+#### Bindings
+
+With `bindings` and `globalBindings`, you can set application bindings. Note that no key conflict checks are implemented, so please be cautious.

@@ -37,7 +37,7 @@ const loadURI = (uri) => {
 
 const quit = (code) => {
   app.quit();
-  unregisterShortcuts();
+  globalShortcut.unregisterAll();
   if (code) process.exit(code);
 };
 
@@ -64,7 +64,9 @@ const setUserAgent = () => {
 };
 
 const unregisterShortcuts = () => {
-  globalShortcut.unregisterAll();
+  for (const binding of config.bindings || []) {
+    globalShortcut.unregister(binding.key);
+  }
 };
 
 const registerShortcuts = () => {
@@ -74,6 +76,14 @@ const registerShortcuts = () => {
       if (focusedWindow) {
         binding.action(focusedWindow);
       }
+    });
+  }
+};
+
+const registerGlobalBindings = () => {
+  for (const binding of config.globalBindings || []) {
+    globalShortcut.register(binding.key, () => {
+      binding.action(mainWindow);
     });
   }
 };
@@ -117,8 +127,10 @@ const createWindow = () => {
 };
 
 app.setName(config.configFolder || config.title);
+
 const runApp = () => {
   registerShortcuts();
+  registerGlobalBindings();
   setUserAgent();
   createWindow();
   app.commandLine.appendSwitch("disable-features", "MediaSessionService");
