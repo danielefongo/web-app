@@ -1,6 +1,6 @@
 {
   "name": "WebApp",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "github:castlabs/electron-releases#v31.0.0+wvcus",
+    "electron": "github:castlabs/electron-releases#v32.2.5+wvcus",
     "electron-builder": "^24.13.3"
   },
   "build": {
@@ -28,9 +28,9 @@
     "linux": {
       "target": "AppImage"
     },
-    "electronVersion": "31.0.0",
+    "electronVersion": "32.2.5",
     "electronDownload": {
-      "version": "31.0.0+wvcus",
+      "version": "32.2.5+wvcus",
       "mirror": "https://github.com/castlabs/electron-releases/releases/download/v"
     }
   },
